@@ -7,14 +7,14 @@ def save_video_file(base64_video, file_path):
         video_file.write(base64.b64decode(base64_video))
 output_video_path = "test_success_fuck_yeah.mp4"
 
-url = "http://71ef-2601-98a-4204-2fa0-71a8-da56-be3e-db35.ngrok.io/create_video"
+url = "http://0e9a-2601-98a-4204-2fa0-a105-8304-cdea-40a.ngrok.io/create_video"
 
 with open('testing/test_call.json') as f:
   data = f.read()
 
 data = json.loads(data)
 data["videoType"] = "gif"
-data["wav2lipURL"] = "http://81d1-34-86-179-3.ngrok.io/deepfake"
+data["wav2lipURL"] = ""
 
 headers = {'Content-Type': 'application/json'}
 

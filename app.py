@@ -17,7 +17,6 @@ if not os.path.exists(app.config['OUTPUT_FOLDER']):
 
 @app.route('/create_video', methods=['POST'])
 def create_video_api():
-    # TODO: Finish name-video mappings in wav2lip
 
     data = request.get_json()
 
@@ -29,38 +28,44 @@ def create_video_api():
 
     file_paths=[]
     w=0
-    for i in range(len(audio_files)):
-        if audio_files[i] is None:
-            continue
-        save_mpeg_from_base64(audio_files[i], f"audio/audio_{w}.mpeg")
-        file_paths.append(f"audio_{w}.mpeg")
-        w+=1
+    try:
+        for i in range(len(audio_files)):
+            if audio_files[i] is None:
+                continue
+            save_mpeg_from_base64(audio_files[i], f"audio/audio_{w}.mpeg")
+            file_paths.append(f"audio_{w}.mpeg")
+            w+=1
 
-    if video_type=="deepfake":
-        # create deep fake videos
-        print("Creating Deepfakes...")
+        if video_type=="deepfake":
+            # create deep fake videos
+            print("Creating Deepfakes...")
 
-        create_deepfakes_from_bytes(wav2lipURL, audio_files, first_speaker, second_speaker)
+            create_deepfakes_from_bytes(wav2lipURL, audio_files, first_speaker, second_speaker)
+            print("Done!")
+
+        if (len(os.listdir("deep_fakes")) != len(os.listdir("audio"))) and video_type == "deepfake":
+            print("Deep fake failed, using gifs...")
+            video_type = "gif"
+
+        print("Creating Videos...")
+        # Call the create_video function
+        create_video(file_paths, first_speaker, second_speaker, video_type)
         print("Done!")
 
-    if (len(os.listdir("deep_fakes")) != len(os.listdir("audio"))) and video_type == "deepfake":
-        print("Deep fake failed, using gifs...")
-        video_type = "gif"
+        # Send back the final output.mp4
+        base64_video = mp4_to_base64("output.mp4")
+        os.remove("output.mp4")
 
-    print("Creating Videos...")
-    # Call the create_video function
-    create_video(file_paths, first_speaker, second_speaker, video_type)
-    print("Done!")
-
-    # Send back the final output.mp4
-    base64_video = mp4_to_base64("output.mp4")
-    # os.remove("output.mp4")
-
-    response = jsonify({
-        "status": "success",
-        "base64_video": base64_video
-    })
-    response.headers.set('Content-Type', 'application/json')
+        response = jsonify({
+            "status": "success",
+            "base64_video": base64_video
+        })
+        response.headers.set('Content-Type', 'application/json')
+    except:
+        response = jsonify({
+            "status": "failed"
+        })
+        response.headers.set('Content-Type', 'application/json')
 
     return response
 

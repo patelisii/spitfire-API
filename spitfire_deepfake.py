@@ -16,15 +16,15 @@ def read_audio_file(file_path):
     with open(file_path, "rb") as audio_file:
         return base64.b64encode(audio_file.read()).decode('utf-8')
 
-def fetch_face_image(person, rap):
-    # Import database module.
-    from firebase_admin import db
-
-    # Get a database reference to our posts
-    ref = db.reference(f'path/to/faces/face_videos/{person} {rap} Video.mp4')
-
-    # Read the data at the posts reference (this is a blocking operation)
-    return ref.get()
+# def fetch_face_image(person, rap):
+#     # Import database module.
+#     from firebase_admin import db
+#
+#     # Get a database reference to our posts
+#     ref = db.reference(f'path/to/faces/face_videos/{person} {rap} Video.mp4')
+#
+#     # Read the data at the posts reference (this is a blocking operation)
+#     return ref.get()
 
 def get_mpeg_length(audio_file):
     audio = MP3(audio_file)
@@ -289,6 +289,21 @@ def create_deepfakes_from_bytes(url, audio_files, person1, person2):
         else:
             request_deep_fake(url, person2, audio_files[i], f"deep_fakes/vid_{i}.mp4")
 
+def clear_files(audio_files):
+    for i in range(len(audio_files)):
+        if os.path.exists(f"temp/face_video_{i}.mp4"):
+            os.remove(f"temp/face_video_{i}.mp4")
+        if os.path.exists(f"temp/final_{i}.mp4"):
+            os.remove(f"temp/final_{i}.mp4")
+        if os.path.exists(f"audio/audio_{i}.mpeg"):
+            os.remove(f"audio/audio_{i}.mpeg")
+        if os.path.exists(f"deep_fakes/vid_{i}.mp4"):
+            os.remove(f"deep_fakes/vid_{i}.mp4")
+    if os.path.exists("temp/audio_temp.mp3"):
+        os.remove("temp/audio_temp.mp3")
+    if os.path.exists("temp/mixed.mp3"):
+        os.remove("temp/mixed.mp3")
+
 def create_video(audio_files, first_speaker, second_speaker, type):
     """
     init_video = intro vid
@@ -325,16 +340,5 @@ def create_video(audio_files, first_speaker, second_speaker, type):
     attach_audio_to_video(f"temp/final_{len(audio_files)-1}.mp4", "temp/mixed.mp3", "output.mp4")
 
     # Delete temporary files
-    for i in range(len(audio_files)):
-        if os.path.exists(f"temp/face_video_{i}.mp4"):
-            os.remove(f"temp/face_video_{i}.mp4")
-        if os.path.exists(f"temp/final_{i}.mp4"):
-            os.remove(f"temp/final_{i}.mp4")
-        if os.path.exists(f"audio/audio_{i}.mpeg"):
-            os.remove(f"audio/audio_{i}.mpeg")
-        if os.path.exists(f"deep_fakes/vid_{i}.mp4"):
-            os.remove(f"deep_fakes/vid_{i}.mp4")
-    if os.path.exists("temp/audio_temp.mp3"):
-        os.remove("temp/audio_temp.mp3")
-    if os.path.exists("temp/mixed.mp3"):
-        os.remove("temp/mixed.mp3")
+    clear_files(audio_files)
+
