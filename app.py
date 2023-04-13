@@ -62,6 +62,7 @@ def create_video_api():
         })
         response.headers.set('Content-Type', 'application/json')
     except:
+        clear_files(audio_files)
         response = jsonify({
             "status": "failed"
         })
