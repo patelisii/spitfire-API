@@ -2,18 +2,16 @@ from flask import Flask, request, jsonify
 import os
 from spitfire_deepfake import *
 import base64
-from flask_ngrok import run_with_ngrok
+
 
 app = Flask(__name__)
-run_with_ngrok(app)
-app.config['UPLOAD_FOLDER'] = 'uploads/'
-app.config['OUTPUT_FOLDER'] = 'output/'
-app.config['ALLOWED_EXTENSIONS'] = {'mp4', 'avi'}
 
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
-if not os.path.exists(app.config['OUTPUT_FOLDER']):
-    os.makedirs(app.config['OUTPUT_FOLDER'])
+
+
+@app.route('/', methods=['GET'])
+def hello():
+    print("Running app.py :D")
+
 
 @app.route('/create_video', methods=['POST'])
 def create_video_api():
@@ -85,5 +83,6 @@ def mp4_to_base64(file_path):
     return base64_data
 
 if __name__ == '__main__':
-    app.run()
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host='0.0.0.0', port=port)
 
