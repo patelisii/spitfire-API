@@ -7,7 +7,7 @@ def save_video_file(base64_video, file_path):
         video_file.write(base64.b64decode(base64_video))
 output_video_path = "test_success_fuck_yeah.mp4"
 
-url = "http://localhost:8080/create_video"
+url = "https://spitfire-api-1-edlxzlxvta-uc.a.run.app/create_video"
 
 with open('testing/test_call.json') as f:
   data = f.read()
