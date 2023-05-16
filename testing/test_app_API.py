@@ -7,7 +7,7 @@ def save_video_file(base64_video, file_path):
         video_file.write(base64.b64decode(base64_video))
 output_video_path = "test_success_fuck_yeah.mp4"
 
-url = "https://spitfire-api-1-edlxzlxvta-uc.a.run.app/create_video"
+url = "http://127.0.0.1:5000/create_video"
 
 with open('testing/test_call.json') as f:
   data = f.read()
@@ -27,4 +27,4 @@ if received_data["status"] == "success":
     save_video_file(base64_video, output_video_path)
     print(f"Video saved at {output_video_path}")
 else:
-    print("Error occurred")
+    print(received_data["error"])

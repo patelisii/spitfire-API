@@ -2,7 +2,7 @@ import requests
 import json
 import base64
 
-url = "http://127.0.0.1:5000/deepfake"  # Change the IP and port if needed
+url = "http://34fc-128-118-7-156.ngrok.io/deepfake"  # Change the IP and port if needed
 
 def read_audio_file(file_path):
     with open(file_path, "rb") as audio_file:
@@ -12,16 +12,18 @@ def save_video_file(base64_video, file_path):
     with open(file_path, "wb") as video_file:
         video_file.write(base64.b64decode(base64_video))
 
-audio_file_path = "audio/audio_1.mpeg"  # Replace with the path to your audio file
+audio_file_path = "testing/samples/audio_1.mpeg"  # Replace with the path to your audio file
 base64_audio = read_audio_file(audio_file_path)
 
 
 data = {
-    "name": "Tate",  # Replace with your desired name
+    "name": "Obama",  # Replace with your desired name
     "audio": base64_audio
 }
 
 headers = {'Content-Type': 'application/json'}
+
+print(data)
 
 response = requests.post(url, data=json.dumps(data), headers=headers)
 

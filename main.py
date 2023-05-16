@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
-import os
 from spitfire_deepfake import *
 import base64
+import traceback
 
 
 app = Flask(__name__)
@@ -41,6 +41,7 @@ def create_video_api():
             create_deepfakes_from_bytes(wav2lipURL, audio_files, first_speaker, second_speaker)
             print("Done!")
 
+        # check if wav2lip failed
         if (len(os.listdir("deep_fakes")) != len(os.listdir("audio"))) and video_type == "deepfake":
             print("Deep fake failed, using gifs...")
             video_type = "gif"
@@ -52,17 +53,19 @@ def create_video_api():
 
         # Send back the final output.mp4
         base64_video = mp4_to_base64("output.mp4")
-        os.remove("output.mp4")
+        # os.remove("output.mp4")
 
         response = jsonify({
             "status": "success",
             "base64_video": base64_video
         })
         response.headers.set('Content-Type', 'application/json')
-    except:
+    except Exception as e:
+        error_message = str(e) + "\n" + traceback.format_exc()
         clear_files(audio_files)
         response = jsonify({
-            "status": "failed"
+            "status": "failed",
+            "error": error_message
         })
         response.headers.set('Content-Type', 'application/json')
 
@@ -83,6 +86,8 @@ def mp4_to_base64(file_path):
     return base64_data
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 8080))
-    app.run(debug=True, host='0.0.0.0', port=port)
+    # FOR DEPLOYMENT:
+    # port = int(os.environ.get("PORT", 8080))
+    # app.run(debug=True, host='0.0.0.0', port=port)
+    app.run()
 
