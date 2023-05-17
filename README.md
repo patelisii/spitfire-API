@@ -1,6 +1,6 @@
 # Spitfire-API
 
-## To use video utils:
+## Setup Environment:
 
 Clone the respository vertical-vid branch
 
@@ -18,7 +18,19 @@ Install Dependencies
 pip install -r requirements.txt
 ```
 
-# Video Utils
+## Test Rap Battle API
+
+Navigate to your terminal with the virtual environment and run this command to launch the api.
+```bash
+python main.py
+```
+Then, open a new terminal also using the virtual environment and run this python file to test the api. It should create a rap video called "test_success_fuck_yeah.mp4"
+```bash
+python testing/test_app_API.py
+```
+
+
+# Video Utils Documentation
 
 This Python file provides a set of utility functions to edit video and audio files. Below is a detailed explanation of each function and how to use them.
 
